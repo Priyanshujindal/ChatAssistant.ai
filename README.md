@@ -291,5 +291,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **Made with ❤️ using Flask and vanilla JavaScript**
-
-*Last updated: December 2024* 
