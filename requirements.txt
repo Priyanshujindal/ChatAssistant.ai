@@ -3,7 +3,7 @@ Flask==3.0.0
 Werkzeug==3.0.1
 
 # LMStudio for AI Model Integration
-lmstudio==0.1.0
+lmstudio==1.4.1
 
 # Environment and Configuration
 python-dotenv==1.0.0
