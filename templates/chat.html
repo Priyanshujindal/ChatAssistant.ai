@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chat Assistant</title>
+  <meta name="description" content="A modern AI chat interface with dark mode and responsive design">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
+</head>
+<body>
+  <div class="container">
+    
+    <aside class="sidebar" id="sidebar" aria-label="Chat sidebar">
+      <div class="sidebar-header">
+        <span class="logo">💬</span>
+        <span class="sidebar-title" id="sidebarTitle">Chat</span>
+        <button class="sidebar-toggle" id="sidebarToggle" title="Expand/collapse sidebar" aria-label="Expand or collapse sidebar">⮜</button>
+      </div>
+      <div class="sidebar-chats" id="sidebarChats">
+        <!-- Chat history items -->
+      </div>
+      <div class="sidebar-footer">
+        <button class="new-chat-btn" id="newChatBtn" aria-label="Start new chat">
+          <span class="new-chat-icon">+</span>
+          <span class="new-chat-text">New Chat</span>
+        </button>
+        <div class="sidebar-actions">
+          <button class="settings-btn" id="settingsBtn" title="Settings" aria-label="Open settings">
+            ⚙️
+          </button>
+        </div>
+      </div>
+    </aside>
+    
+    <main class="main">
+      <div class="main-header">
+        <div class="header-left">
+          <span class="logo">🤖</span>
+          <span class="header-title">AI Chat Assistant</span>
+        </div>
+        <div class="header-actions">
+          <button id="mobileSidebarBtn" class="sidebar-toggle" title="Open sidebar" aria-label="Open sidebar" style="display:none;">☰</button>
+          <button id="darkModeToggle" class="dark-toggle" title="Switch to dark mode" aria-label="Toggle dark mode" aria-checked="false" role="switch">
+            <span class="dark-toggle-bg"></span>
+            <span class="dark-toggle-icon dark-toggle-sun" id="darkModeSun">☀️</span>
+            <span class="dark-toggle-icon dark-toggle-moon" id="darkModeMoon">🌙</span>
+            <span class="dark-toggle-label" id="darkModeLabel">Light</span>
+          </button>
+        </div>
+      </div>
+      
+      <div class="chat-area" id="chatArea" role="log" aria-label="Chat messages">
+        <!-- Chat messages -->
+      </div>
+      
+      <div class="typing-indicator" id="typingIndicator" style="display:none;" aria-label="Assistant is typing">
+        <div class="typing-content">
+          <span class="typing-avatar">🤖</span>
+          <div class="typing-bubble">
+            <span>Assistant is typing</span>
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+      </div>
+      
+      <form class="chat-input-bar" id="chatForm" autocomplete="off" aria-label="Send a message">
+        <div class="input-wrapper">
+          <textarea 
+            class="chat-input" 
+            id="chatInput" 
+            placeholder="Type your message... (Press Ctrl+Enter to send)" 
+            autocomplete="off" 
+            required 
+            aria-label="Type your message"
+            rows="1"
+            maxlength="2000"
+          ></textarea>
+          <div class="input-actions">
+            <span class="char-count" id="charCount">0/2000</span>
+            <button type="submit" class="send-btn" title="Send message (Ctrl+Enter)" aria-label="Send message">
+              <span class="send-icon">&#9658;</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal" id="settingsModal" style="display:none;" role="dialog" aria-labelledby="settingsTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="settingsTitle">Settings</h2>
+        <button class="modal-close" id="closeSettings" aria-label="Close settings">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <label for="autoScroll">Auto-scroll to new messages</label>
+          <input type="checkbox" id="autoScroll" checked>
+        </div>
+        <div class="setting-group">
+          <label for="soundEnabled">Enable sound notifications</label>
+          <input type="checkbox" id="soundEnabled">
+        </div>
+        <div class="setting-group">
+          <label for="messageLimit">Message character limit</label>
+          <input type="number" id="messageLimit" value="2000" min="100" max="5000">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // DOM Elements
+    const chatArea = document.getElementById('chatArea');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const charCount = document.getElementById('charCount');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsModal = document.getElementById('settingsModal');
+    const closeSettings = document.getElementById('closeSettings');
+    const autoScroll = document.getElementById('autoScroll');
+    const soundEnabled = document.getElementById('soundEnabled');
+    const messageLimit = document.getElementById('messageLimit');
+
+    // Settings
+    let settings = {
+      autoScroll: true,
+      soundEnabled: false,
+      messageLimit: 2000
+    };
+
+    // Load settings from localStorage
+    function loadSettings() {
+      const saved = localStorage.getItem('chat_settings');
+      if (saved) {
+        settings = { ...settings, ...JSON.parse(saved) };
+        autoScroll.checked = settings.autoScroll;
+        soundEnabled.checked = settings.soundEnabled;
+        messageLimit.value = settings.messageLimit;
+      }
+    }
+
+    // Save settings to localStorage
+    function saveSettings() {
+      settings.autoScroll = autoScroll.checked;
+      settings.soundEnabled = soundEnabled.checked;
+      settings.messageLimit = parseInt(messageLimit.value) || 2000;
+      localStorage.setItem('chat_settings', JSON.stringify(settings));
+      chatInput.maxLength = settings.messageLimit;
+    }
+
+    // Character counter
+    function updateCharCount() {
+      const count = chatInput.value.length;
+      charCount.textContent = `${count}/${settings.messageLimit}`;
+      charCount.className = count > settings.messageLimit * 0.9 ? 'char-count warning' : 'char-count';
+    }
+
+    // Auto-resize textarea
+    function resizeTextarea() {
+      chatInput.style.height = 'auto';
+      chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+    }
+
+    // Add message with timestamp
+    function addMessage(content, sender, timestamp = new Date()) {
+      const messageRow = document.createElement('div');
+      messageRow.className = `chat-message-row ${sender}`;
+      
+      const timeString = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      messageRow.innerHTML = `
+        <div class="chat-avatar">${sender === 'user' ? '🧑' : '🤖'}</div>
+        <div class="chat-bubble">
+          <div class="message-content">${content}</div>
+          <div class="message-time">${timeString}</div>
+        </div>
+        <div class="message-actions">
+          <button class="action-btn" title="Copy message" aria-label="Copy message">📋</button>
+          ${sender === 'assistant' ? '<button class="action-btn" title="Like message" aria-label="Like message">👍</button>' : ''}
+        </div>
+      `;
+      
+      chatArea.appendChild(messageRow);
+      
+      if (settings.autoScroll) {
+        chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: 'smooth' });
+      }
+      
+      // Add click handlers for action buttons
+      const copyBtn = messageRow.querySelector('.action-btn');
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(content);
+        copyBtn.textContent = '✅';
+        setTimeout(() => copyBtn.textContent = '📋', 1000);
+      });
+      
+      return messageRow;
+    }
+
+    // Enhanced chat form submission
+    chatForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const userMessage = chatInput.value.trim();
+      if (!userMessage) return;
+
+      // Add user message
+      addMessage(userMessage, 'user');
+      chatInput.value = '';
+      resizeTextarea();
+      updateCharCount();
+
+      // Show typing indicator
+      typingIndicator.style.display = 'block';
+      
+      try {
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userMessage })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Add assistant response
+        addMessage(data.response, 'assistant');
+        
+        // Play sound if enabled
+        if (settings.soundEnabled) {
+          // You can add sound notification here
+          console.log('Sound notification would play here');
+        }
+        
+      } catch (error) {
+        console.error('Error:', error);
+        addMessage('Sorry, I encountered an error. Please try again.', 'assistant');
+      } finally {
+        typingIndicator.style.display = 'none';
+      }
+    });
+
+    // Keyboard shortcuts
+    chatInput.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        chatForm.dispatchEvent(new Event('submit'));
+      }
+    });
+
+    // Input event handlers
+    chatInput.addEventListener('input', function() {
+      updateCharCount();
+      resizeTextarea();
+    });
+
+    // Settings modal
+    settingsBtn.addEventListener('click', () => {
+      settingsModal.style.display = 'flex';
+    });
+
+    closeSettings.addEventListener('click', () => {
+      settingsModal.style.display = 'none';
+    });
+
+    // Close modal on outside click
+    settingsModal.addEventListener('click', (e) => {
+      if (e.target === settingsModal) {
+        settingsModal.style.display = 'none';
+      }
+    });
+
+    // Save settings on change
+    [autoScroll, soundEnabled, messageLimit].forEach(element => {
+      element.addEventListener('change', saveSettings);
+    });
+
+    // Sidebar logic
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarChats = document.getElementById('sidebarChats');
+    const newChatBtn = document.getElementById('newChatBtn');
+    const mobileSidebarBtn = document.getElementById('mobileSidebarBtn');
+    let sidebarCollapsed = false;
+
+    function updateSidebarVisibility() {
+      if (window.innerWidth <= 900) {
+        mobileSidebarBtn.style.display = '';
+        sidebar.classList.remove('collapsed');
+      } else {
+        mobileSidebarBtn.style.display = 'none';
+        sidebar.classList.remove('open');
+        sidebar.classList.remove('collapsed');
+      }
+    }
+    
+    window.addEventListener('resize', updateSidebarVisibility);
+    updateSidebarVisibility();
+
+    sidebarToggle.addEventListener('click', () => {
+      sidebarCollapsed = !sidebarCollapsed;
+      sidebar.classList.toggle('collapsed', sidebarCollapsed);
+      sidebarToggle.textContent = sidebarCollapsed ? '⮞' : '⮜';
+    });
+    
+    mobileSidebarBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+    });
+    
+    document.body.addEventListener('click', (e) => {
+      if (window.innerWidth <= 900 && sidebar.classList.contains('open')) {
+        if (!sidebar.contains(e.target) && e.target !== mobileSidebarBtn) {
+          sidebar.classList.remove('open');
+        }
+      }
+    });
+
+    // Chat history management
+    let chats = [
+      { id: 1, title: 'Welcome', messages: [
+        { sender: 'assistant', text: 'Hello! I\'m your AI assistant. How can I help you today?', timestamp: new Date() }
+      ] }
+    ];
+    let currentChatId = 1;
+
+    function renderSidebar() {
+      sidebarChats.innerHTML = '';
+      chats.forEach(chat => {
+        const btn = document.createElement('button');
+        btn.className = 'chat-item' + (chat.id === currentChatId ? ' active' : '');
+        btn.textContent = chat.title;
+        btn.onclick = () => {
+          currentChatId = chat.id;
+          renderSidebar();
+          renderChat();
+          if (window.innerWidth <= 900) sidebar.classList.remove('open');
+        };
+        sidebarChats.appendChild(btn);
+      });
+    }
+
+    function renderChat() {
+      chatArea.innerHTML = '';
+      const chat = chats.find(c => c.id === currentChatId);
+      if (!chat) return;
+      
+      chat.messages.forEach(msg => {
+        addMessage(msg.text, msg.sender, msg.timestamp);
+      });
+    }
+
+    newChatBtn.addEventListener('click', () => {
+      const newId = chats.length ? Math.max(...chats.map(c => c.id)) + 1 : 1;
+      const newChat = { 
+        id: newId, 
+        title: 'New Chat', 
+        messages: [
+          { sender: 'assistant', text: 'Hello! How can I help you?', timestamp: new Date() }
+        ] 
+      };
+      chats.unshift(newChat);
+      currentChatId = newId;
+      renderSidebar();
+      renderChat();
+      chatInput.focus();
+    });
+
+    // Update chat title on first user message
+    function updateChatTitle(chat, text) {
+      if (chat.title === 'New Chat' || chat.title === 'Welcome') {
+        chat.title = text.length > 18 ? text.slice(0, 18) + '...' : text;
+      }
+    }
+
+    // Dark mode functionality
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const darkModeSun = document.getElementById('darkModeSun');
+    const darkModeMoon = document.getElementById('darkModeMoon');
+    const darkModeLabel = document.getElementById('darkModeLabel');
+    
+    function setDarkMode(enabled) {
+      document.body.classList.toggle('dark-mode', enabled);
+      darkModeToggle.setAttribute('aria-checked', enabled ? 'true' : 'false');
+      darkModeLabel.textContent = enabled ? 'Dark' : 'Light';
+      darkModeToggle.title = enabled ? 'Switch to light mode' : 'Switch to dark mode';
+      localStorage.setItem('chat_dark_mode', enabled ? '1' : '0');
+    }
+    
+    darkModeToggle.addEventListener('click', () => {
+      setDarkMode(!document.body.classList.contains('dark-mode'));
+    });
+
+    // Initialize
+    loadSettings();
+    setDarkMode(localStorage.getItem('chat_dark_mode') === '1');
+    renderSidebar();
+    renderChat();
+    chatInput.focus();
+    updateCharCount();
+  </script>
+</body>
+</html>
