@@ -1,4 +1,4 @@
-# 🤖 AI Chat Assistant
+# 🤖 AI Chat Assistant Using Lm Studio
 
 A modern, responsive AI chat interface built with Flask and vanilla JavaScript. Features a beautiful UI similar to ChatGPT and Perplexity with dark mode support, real-time messaging, and advanced user experience features.
 
