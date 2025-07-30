@@ -547,10 +547,11 @@ body.dark-mode .dark-toggle-moon {
 
 .chat-message-row {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 18px;
   padding: 0 40px;
   animation: messageSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-wrap: wrap;
 }
 
 @keyframes messageSlideIn {
@@ -566,6 +567,7 @@ body.dark-mode .dark-toggle-moon {
 
 .chat-message-row.user {
   flex-direction: row-reverse;
+  align-items: flex-start;
 }
 
 .chat-avatar {
@@ -622,19 +624,11 @@ body.dark-mode .dark-toggle-moon {
   backdrop-filter: var(--backdrop-blur);
   position: relative;
   overflow: hidden;
+  flex: 1;
+  min-width: 0;
 }
 
-.chat-bubble::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-bg);
-  opacity: 0.3;
-  z-index: -1;
-}
+/* Removed the ::before pseudo-element that was causing the "defusing" visual effect */
 
 .chat-message-row.user .chat-bubble {
   background: var(--user-bubble);
@@ -661,17 +655,7 @@ body.dark-mode .dark-toggle-moon {
   position: relative;
 }
 
-.chat-input-bar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-bg);
-  opacity: 0.5;
-  z-index: -1;
-}
+/* Removed the ::before pseudo-element that was causing visual effects */
 
 .chat-input {
   flex: 1;
@@ -716,17 +700,7 @@ body.dark-mode .dark-toggle-moon {
   overflow: hidden;
 }
 
-.send-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
-  transition: left 0.5s;
-  transform: translateX(-100%);
-}
+/* Removed the ::before pseudo-element that was causing visual effects */
 
 .send-btn:hover {
   background: var(--primary-dark);
@@ -734,9 +708,7 @@ body.dark-mode .dark-toggle-moon {
   transform: translateY(-2px) scale(1.05);
 }
 
-.send-btn:hover::before {
-  transform: translateX(100%);
-}
+/* Removed the hover pseudo-element that referenced the removed ::before element */
 
 .send-btn:active {
   transform: translateY(0) scale(0.98);
@@ -1059,6 +1031,8 @@ button:focus, .chat-input:focus {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-left: 10px;
   transform: translateX(-10px);
+  flex-shrink: 0;
+  align-self: flex-start;
 }
 
 .chat-message-row:hover .message-actions {
@@ -1264,6 +1238,15 @@ body.dark-mode .setting-group input[type="number"] {
   
   .chat-bubble {
     max-width: 85%;
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .message-actions {
+    opacity: 1;
+    transform: translateX(0);
+    margin-top: 8px;
+    margin-left: 0;
   }
 }
 
@@ -1493,11 +1476,15 @@ textarea:focus-visible {
   
   .chat-bubble {
     max-width: 90%;
+    flex: 1;
+    min-width: 0;
   }
   
   .message-actions {
     opacity: 1;
     transform: translateX(0);
+    margin-top: 8px;
+    margin-left: 0;
   }
 }
 
