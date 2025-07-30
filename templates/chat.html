@@ -396,6 +396,7 @@
         const data = await response.json();
         
         // Add assistant response
+        console.log('Assistant response:', data.response);
         addMessage(data.response, 'assistant');
         
         // Play sound if enabled

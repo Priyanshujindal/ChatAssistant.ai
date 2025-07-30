@@ -1,10 +1,24 @@
 from flask import Flask, request, jsonify,render_template
-import  lmstudio as  lms
+import google.generativeai as genai
 import os
 from flask_cors import CORS
+from dotenv import load_dotenv
+load_dotenv()
 app=Flask(__name__)
 CORS(app)
-model=lms.llm("mistralai/mistral-7b-instruct-v0.3")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+FLASK_ENV = os.environ.get("FLASK_ENV", "development")
+FLASK_DEBUG = os.environ.get("FLASK_DEBUG", "True").lower() == "true"
+PORT = int(os.environ.get("PORT", 5000))
+
+genai.configure(api_key=GEMINI_API_KEY)
+model = genai.GenerativeModel("gemini-2.0-flash")
+
+if not GEMINI_API_KEY:
+    print("Error: GEMINI_API_KEY not found in environment variables")
+    print("Please set your Gemini API key in the .env file")
+    exit(1)
+
 @app.route('/',methods=['GET'])
 def index():
     return render_template('chat.html')
@@ -39,11 +53,13 @@ def chat():
     f"User: {user_message}\n"
     "Assistant:"
     )
-    bot_reply=model.respond(full_prompt)
-    return jsonify({'response': f'{bot_reply}'}),200
+    bot_reply=model.generate_content(full_prompt)
+    response_text = getattr(bot_reply, "text", "")
+    print(f"Bot reply: {response_text}")
+    return jsonify({'response': f'{response_text}'}),200
 
 
 
 if(__name__ == "__main__"):
     port=int(os.environ.get('PORT',5000))
-    app.run(host="0.0.0.0",port=port,debug=True)
+    app.run(host="0.0.0.0",port=port,debug=FLASK_DEBUG)

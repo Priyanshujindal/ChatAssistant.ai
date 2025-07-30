@@ -2,21 +2,14 @@
 Flask==3.0.0
 Werkzeug==3.0.1
 
-# LMStudio for AI Model Integration
-lmstudio==1.4.1
+# Google Gemini AI Integration
+google-generativeai==0.3.0
 
 # Environment and Configuration
 python-dotenv==1.0.0
 
 # CORS Support (for cross-origin requests)
 flask-cors==4.0.0
-
-# Security and Validation
-Flask-WTF==1.2.1
-WTForms==3.1.1
-
-# Development and Debugging
-Flask-DebugToolbar==0.13.1
 
 # Production Server (for deployment)
 gunicorn==21.2.0
