@@ -552,6 +552,7 @@ body.dark-mode .dark-toggle-moon {
   padding: 0 40px;
   animation: messageSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 @keyframes messageSlideIn {
@@ -626,6 +627,8 @@ body.dark-mode .dark-toggle-moon {
   overflow: hidden;
   flex: 1;
   min-width: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Removed the ::before pseudo-element that was causing the "defusing" visual effect */
@@ -738,6 +741,15 @@ body.dark-mode .dark-toggle-moon {
   .chat-bubble {
     padding: 16px 20px;
     font-size: 1rem;
+    max-width: 85%;
+    flex: 1;
+    min-width: 0;
+  }
+  .message-actions {
+    opacity: 1;
+    transform: translateX(0);
+    margin-top: 8px;
+    margin-left: 0;
   }
   .chat-input-bar {
     padding-top: 16px;
@@ -1033,6 +1045,7 @@ button:focus, .chat-input:focus {
   transform: translateX(-10px);
   flex-shrink: 0;
   align-self: flex-start;
+  min-width: 0;
 }
 
 .chat-message-row:hover .message-actions {
@@ -1478,6 +1491,8 @@ textarea:focus-visible {
     max-width: 90%;
     flex: 1;
     min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .message-actions {
@@ -1485,6 +1500,11 @@ textarea:focus-visible {
     transform: translateX(0);
     margin-top: 8px;
     margin-left: 0;
+  }
+  
+  .chat-message-row {
+    gap: 12px;
+    padding: 0 16px;
   }
 }
 
