@@ -1,6 +1,6 @@
 # 🤖 AI Chat Assistant
 
-A modern, responsive AI chat interface built with Flask and vanilla JavaScript. Features a beautiful UI similar to ChatGPT and Perplexity with dark mode support, real-time messaging, and advanced user experience features.
+A modern, responsive AI chat interface built with Flask, vanilla JavaScript, and Google Gemini API. Features a beautiful UI similar to ChatGPT and Perplexity with dark mode support, real-time messaging, and advanced user experience features.
 
 ![Chat Assistant Demo](https://img.shields.io/badge/Status-Ready-brightgreen)
 ![Python](https://img.shields.io/badge/Python-3.8+-blue)
@@ -11,7 +11,7 @@ A modern, responsive AI chat interface built with Flask and vanilla JavaScript. 
 
 ### 🎨 **Modern UI/UX**
 - **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
-- **Dark/Light Mode**: Toggle between themes with persistent settings
+- **Dark/Light Mode**: Toggle between themes with a floating button at the top right
 - **Smooth Animations**: Elegant transitions and micro-interactions
 - **Accessibility**: WCAG compliant with keyboard navigation and screen reader support
 
@@ -39,6 +39,7 @@ A modern, responsive AI chat interface built with Flask and vanilla JavaScript. 
 ### Prerequisites
 - Python 3.8 or higher
 - pip (Python package manager)
+- Google Gemini API key ([get one here](https://makersuite.google.com/app/apikey))
 
 ### Installation
 
@@ -67,12 +68,22 @@ A modern, responsive AI chat interface built with Flask and vanilla JavaScript. 
    pip install -r requirements.txt
    ```
 
-5. **Run the application**
+5. **Configure Gemini API**
+   - Create a `.env` file in the backend directory:
+     ```env
+     GEMINI_API_KEY=your_actual_gemini_api_key_here
+     FLASK_ENV=development
+     FLASK_DEBUG=True
+     PORT=5000
+     ```
+   - Replace `your_actual_gemini_api_key_here` with your real Gemini API key.
+
+6. **Run the application**
    ```bash
    python app.py
    ```
 
-6. **Open your browser**
+7. **Open your browser**
    Navigate to `http://localhost:5000`
 
 ## 📁 Project Structure
@@ -81,11 +92,11 @@ A modern, responsive AI chat interface built with Flask and vanilla JavaScript. 
 backend/
 ├── app.py                 # Flask application
 ├── requirements.txt       # Python dependencies
-├── README.md             # This file
+├── README.md              # This file
 ├── static/
-│   └── chat.css          # Stylesheet
+│   └── chat.css           # Stylesheet
 └── templates/
-    └── chat.html         # Main chat interface
+    └── chat.html          # Main chat interface
 ```
 
 ## 🎮 Usage Guide
@@ -102,7 +113,7 @@ backend/
 - **New Chat**: Click "+ New Chat" to start fresh conversations
 
 ### **Dark Mode**
-- Click the sun/moon toggle in the header
+- Click the floating button at the top right (🌙/☀️ + label)
 - Your preference is automatically saved
 - Works across all browsers and devices
 
@@ -118,28 +129,17 @@ backend/
 
 ## 🔧 Configuration
 
-### **Backend API**
-The frontend expects a Flask backend with the following endpoint:
-
-```python
-@app.route('/chat', methods=['POST'])
-def chat():
-    data = request.get_json()
-    user_message = data.get('message')
-    
-    # Your AI processing logic here
-    response = process_message(user_message)
-    
-    return jsonify({'response': response})
-```
+### **Gemini API Integration**
+- The backend uses Google Gemini API for all AI responses.
+- You must set `GEMINI_API_KEY` in your `.env` file.
+- See [Google AI Studio](https://makersuite.google.com/app/apikey) for API key setup.
 
 ### **Environment Variables**
 Create a `.env` file in the backend directory:
-
 ```env
+GEMINI_API_KEY=your_actual_gemini_api_key_here
 FLASK_ENV=development
-FLASK_DEBUG=1
-SECRET_KEY=your-secret-key-here
+FLASK_DEBUG=True
 PORT=5000
 ```
 
@@ -173,6 +173,7 @@ Edit `static/chat.css` to customize:
 ### **Backend Integration**
 - **Flask**: Python web framework
 - **RESTful API**: JSON-based communication
+- **Google Gemini API**: AI-powered responses
 - **Error Handling**: Graceful error responses
 - **CORS**: Configure for cross-origin requests if needed
 
@@ -182,7 +183,7 @@ Edit `static/chat.css` to customize:
 python -m pytest tests/
 
 # Manual testing checklist:
-# ✅ Dark mode toggle
+# ✅ Dark mode toggle (floating button)
 # ✅ Sidebar collapse/expand
 # ✅ Mobile responsiveness
 # ✅ Message sending/receiving
@@ -230,21 +231,10 @@ python app.py
 5. **Set up SSL certificates** for HTTPS
 6. **Configure environment variables**
 
-### **Docker Deployment**
-```dockerfile
-FROM python:3.9-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-EXPOSE 5000
-CMD ["python", "app.py"]
-```
-
 ### **Render Deployment**
 ```bash
 # Create Procfile
-echo "web: python app.py" > Procfile
+web: python app.py
 
 # Deploy to Render
 # 1. Connect your GitHub repository to Render
@@ -252,14 +242,14 @@ echo "web: python app.py" > Procfile
 # 3. Set the following configuration:
 #    - Build Command: pip install -r requirements.txt
 #    - Start Command: python app.py
-#    - Environment: Python 3.9
+#    - Environment: Python 3.9+
 #    - Port: 5000
 ```
 
 **Render Configuration:**
 - **Build Command**: `pip install -r requirements.txt`
 - **Start Command**: `python app.py`
-- **Environment**: Python 3.9
+- **Environment**: Python 3.9+
 - **Port**: 5000
 - **Auto-Deploy**: Enable for automatic deployments from GitHub
 
@@ -281,6 +271,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **CSS Variables**: Modern theming system
 - **Flask**: Lightweight Python web framework
 - **Vanilla JavaScript**: No framework dependencies
+- **Google Gemini API**: Next-gen AI responses
 
 ## 📞 Support
 
@@ -290,4 +281,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Made with ❤️ using Flask and vanilla JavaScript**
+**Made with ❤️ using Flask, Gemini API, and vanilla JavaScript**
