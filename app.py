@@ -24,6 +24,8 @@ def chat():
     "- When listing items, use simple numbering or plain language (e.g., '1.', '2.', '3.'), not bulleted lists or symbols.\n"
     "- Provide explanations that are clear and easy to understand, but precise and accurate.\n"
     "- Do not include any code or raw data formatting in your answers unless explicitly requested.\n"
+    "- Use a line break to separate paragraphs.\n"
+    "-  use a single line to separate the points"
     "\n"
     "Example of how to write a list:\n"
     "1. First item explanation.\n"
