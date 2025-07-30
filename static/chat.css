@@ -358,44 +358,28 @@ body.dark-mode .sidebar-toggle:hover::after {
   background: var(--header-bg);
   border-bottom: 1px solid var(--header-border);
   padding: 32px 40px 24px 40px;
-  display: flex;
+  font-size: 1.8rem;
+  min-height: unset;
   align-items: center;
   gap: 18px;
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: var(--primary);
-  z-index: 2;
-  box-shadow: var(--shadow);
-  letter-spacing: 1.2px;
-  backdrop-filter: var(--backdrop-blur);
-  position: relative;
 }
 
-.main-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-bg);
-  opacity: 0.5;
-  z-index: -1;
+.main-header h1 {
+  font-size: 1.8rem;
+  margin: 0 12px 0 0;
+  display: inline-block;
+  vertical-align: middle;
+  font-weight: 700;
 }
 
 .main-header .logo {
   font-size: 2.2rem;
-  background: var(--primary-gradient);
-  border-radius: 50%;
   width: 52px;
   height: 52px;
-  display: flex;
+  margin-right: 8px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  box-shadow: var(--shadow);
-  position: relative;
-  overflow: hidden;
 }
 
 .main-header .logo::before {
@@ -418,25 +402,15 @@ body.dark-mode .sidebar-toggle:hover::after {
   display: flex;
   align-items: center;
   margin-left: auto;
-  gap: 18px;
+  gap: 8px;
+  height: 100%;
+  justify-content: flex-end;
 }
 
 .dark-toggle {
-  position: relative;
-  width: 76px;
-  height: 40px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  outline: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  user-select: none;
-  border-radius: 20px;
-  overflow: hidden;
+  margin: 0;
+  align-self: center;
+  /* Remove any float or absolute positioning if present */
 }
 
 .dark-toggle-bg {
@@ -503,17 +477,16 @@ body.dark-mode .sidebar-toggle:hover::after {
 }
 
 .dark-toggle-label {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
+  position: static;
+  margin-left: 8px;
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--primary);
   letter-spacing: 0.5px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 2;
-  pointer-events: none;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 body.dark-mode .dark-toggle-bg {
@@ -1033,11 +1006,9 @@ button:focus, .chat-input:focus {
 .header-title {
   font-size: 1.2rem;
   font-weight: 700;
-  background: var(--primary-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 0.5px;
+  display: inline-block;
+  margin-left: 6px;
+  vertical-align: middle;
 }
 
 /* Enhanced Input */
@@ -1643,4 +1614,40 @@ body.dark-mode .toast.error {
   .chat-input-bar {
     border-width: 0.5px;
   }
+}
+
+.floating-dark-toggle {
+  position: fixed;
+  top: 20px;
+  right: 100px;
+  z-index: 9999;
+  background: var(--header-bg);
+  border-radius: 20px;
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+  min-width: unset;
+  height: unset;
+}
+
+.floating-dark-toggle .dark-toggle-icon {
+  font-size: 1.4rem;
+  margin-right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Remove switch background and animation for floating toggle */
+.floating-dark-toggle .dark-toggle-bg,
+.floating-dark-toggle .dark-toggle-sun,
+.floating-dark-toggle .dark-toggle-moon {
+  display: none !important;
 }

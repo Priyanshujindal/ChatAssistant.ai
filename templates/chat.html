@@ -3,8 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChatAssistant.ai</title>
-  <meta name="description" content="ChatAssistant.ai - A modern AI chat interface with dark mode and responsive design">
+  <title>ChatAssistant.ai - AI Chatbot Powered by Gemini</title>
+  <meta name="description" content="ChatAssistant.ai is a modern, AI-powered chatbot using Google Gemini. Get instant, accurate, and professional answers to your questions.">
+  <meta name="keywords" content="AI chatbot, Gemini, Google AI, ChatAssistant, professional answers, instant help">
+  <meta name="author" content="ChatAssistant.ai Team">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:title" content="ChatAssistant.ai - AI Chatbot Powered by Gemini">
+  <meta property="og:description" content="ChatAssistant.ai is a modern, AI-powered chatbot using Google Gemini. Get instant, accurate, and professional answers to your questions.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com/">
+  <meta property="og:image" content="https://yourdomain.com/static/og-image.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ChatAssistant.ai - AI Chatbot Powered by Gemini">
+  <meta name="twitter:description" content="ChatAssistant.ai is a modern, AI-powered chatbot using Google Gemini. Get instant, accurate, and professional answers to your questions.">
+  <meta name="twitter:image" content="https://yourdomain.com/static/og-image.png">
+
   <meta name="theme-color" content="#7c3aed">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -13,6 +29,10 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
 </head>
 <body>
+  <button id="darkModeToggle" class="floating-dark-toggle" title="Switch to dark mode" aria-label="Toggle dark mode">
+    <span class="dark-toggle-icon" id="darkModeIcon">🌙</span>
+    <span class="dark-toggle-label" id="darkModeLabel">Dark</span>
+  </button>
   <div class="container">
     
     <aside class="sidebar" id="sidebar" aria-label="Chat sidebar">
@@ -38,7 +58,8 @@
     </aside>
     
     <main class="main" role="main">
-      <div class="main-header">
+      <header class="main-header">
+        <h1>ChatAssistant.ai</h1>
         <div class="header-left">
           <span class="logo" aria-hidden="true">🤖</span>
           <span class="header-title">ChatAssistant.ai</span>
@@ -47,14 +68,8 @@
           <button id="mobileSidebarBtn" class="sidebar-toggle" title="Open sidebar" aria-label="Open sidebar" style="display:none;" aria-expanded="false">
             <span aria-hidden="true">☰</span>
           </button>
-          <button id="darkModeToggle" class="dark-toggle" title="Switch to dark mode" aria-label="Toggle dark mode" aria-checked="false" role="switch">
-            <span class="dark-toggle-bg" aria-hidden="true"></span>
-            <span class="dark-toggle-icon dark-toggle-sun" id="darkModeSun" aria-hidden="true">☀️</span>
-            <span class="dark-toggle-icon dark-toggle-moon" id="darkModeMoon" aria-hidden="true">🌙</span>
-            <span class="dark-toggle-label" id="darkModeLabel">Light</span>
-          </button>
         </div>
-      </div>
+      </header>
       
       <div class="chat-area" id="chatArea" role="log" aria-label="Chat messages" aria-live="polite">
         <!-- Chat messages -->
@@ -585,15 +600,14 @@
 
     // Enhanced Dark Mode Functionality
     const darkModeToggle = document.getElementById('darkModeToggle');
-    const darkModeSun = document.getElementById('darkModeSun');
-    const darkModeMoon = document.getElementById('darkModeMoon');
+    const darkModeIcon = document.getElementById('darkModeIcon');
     const darkModeLabel = document.getElementById('darkModeLabel');
     
     function setDarkMode(enabled) {
       document.body.classList.toggle('dark-mode', enabled);
-      darkModeToggle.setAttribute('aria-checked', enabled ? 'true' : 'false');
-      darkModeLabel.textContent = enabled ? 'Dark' : 'Light';
-      darkModeToggle.title = enabled ? 'Switch to light mode' : 'Switch to dark mode';
+      darkModeIcon.textContent = enabled ? '☀️' : '🌙';
+      darkModeLabel.textContent = enabled ? 'Light' : 'Dark';
+      darkModeToggle.title = enabled ? 'Switch to dark mode' : 'Switch to light mode';
       localStorage.setItem('chat_dark_mode', enabled ? '1' : '0');
     }
     
