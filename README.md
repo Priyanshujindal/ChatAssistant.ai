@@ -1,4 +1,4 @@
-# 🤖 AI Chat Assistant
+# 🤖 AI Chat Assistant Using gemini(Funny version 😂)
 
 A modern, responsive AI chat interface built with Flask, vanilla JavaScript, and Google Gemini API. Features a beautiful UI similar to ChatGPT and Perplexity with dark mode support, real-time messaging, and advanced user experience features.
 
