@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify,render_template
 import  lmstudio as  lms
 import os
+from flask_cors import CORS
 app=Flask(__name__)
-
+CORS(app)
 model=lms.llm("mistralai/mistral-7b-instruct-v0.3")
 @app.route('/',methods=['GET'])
 def index():
